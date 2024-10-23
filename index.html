@@ -233,7 +233,11 @@
 
       const content = document.getElementById('root');
 
-      const data = fetch('./apostles_gospels.json')
+      const host = location.origin;
+      const resource = "apostles_gospels.json";
+      const apiUrl = `${host}/${resource}`;
+
+      const data = fetch(apiUrl)
         .then((res) => res.json())
         .then((data) => {
           console.log(data[result.book][result.chapter - 1]);
