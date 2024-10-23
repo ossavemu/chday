@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gospel of the Day</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, Ubuntu,
+          sans-serif;
+        line-height: 1.6;
+        background-color: #f5f5f5;
+        color: #333;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      #name {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        padding: 1rem;
+        border-bottom: 3px solid #3498db;
+        margin-bottom: 1rem;
+      }
+
+      #root {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        font-size: 1.2rem;
+        line-height: 1.8;
+        text-align: justify;
+      }
+
+      /* Estilo para dispositivos móviles */
+      @media (max-width: 768px) {
+        body {
+          padding: 15px;
+        }
+
+        #name {
+          font-size: 2rem;
+        }
+
+        #root {
+          padding: 1.5rem;
+          font-size: 1.1rem;
+        }
+      }
+
+      /* Animaciones */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      #name,
+      #root {
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      /* Estilos opcionales para mejorar la legibilidad */
+      #root {
+        text-indent: 2em; /* Sangría en los párrafos */
+        position: relative;
+      }
+
+      #root::first-letter {
+        font-size: 3.5em;
+        float: left;
+        padding-right: 0.1em;
+        line-height: 0.7;
+        color: #3498db;
+      }
+
+      /* Efecto hover suave en el contenedor */
+      #root:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+      }
+
+      /* Tema oscuro (opcional) */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #1a1a1a;
+          color: #f5f5f5;
+        }
+
+        #name {
+          color: #f5f5f5;
+          border-bottom-color: #3498db;
+        }
+
+        #root {
+          background-color: #2c2c2c;
+          box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      .read-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .read-button:hover {
+        transform: scale(1.1);
+        background: #2980b9;
+      }
+
+      .read-button i {
+        font-size: 24px;
+      }
+
+      /* Estilo cuando está leyendo */
+      .reading {
+        background: #e74c3c !important;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div id="name"></div>
+    <div id="root"></div>
+    
+    </div>
+    <button id="readButton" class="read-button">
+      <i class="fas fa-volume-up"></i>
+    </button>
+
+    <!-- Añade FontAwesome para los iconos -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <script>
+      const currentDayOfTheMonth = new Date().getDate();
+      const currentMonth = new Date().getMonth();
+      const order = {
+        2: 'Matthew', // April - June
+        5: 'Mark', // July - September
+        8: 'Luke', // October - December
+        11: 'John', // January - March
+      };
+      const num = {
+        Matthew: 28, // 28 chapters
+        Mark: 16, // 16 chapters
+        Luke: 24, // 24 chapters
+        John: 21, // 21 chapters
+      };
+
+      function cleanBibleText(text) {
+        return text.replace(/\d+\.\s/g, '').trim();
+      }
+
+      // Get the current day of the year (1 to 365)
+      const getDayOfYear = () => {
+        const start = new Date(new Date().getFullYear(), 0, 0);
+        const diff = new Date() - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        return Math.floor(diff / oneDay);
+      };
+
+      // Get the book for the current month
+      const getBook = (month) => {
+        if (month > 8) return order[8]; // October to December
+        if (month > 5) return order[5]; // July to September
+        if (month > 2) return order[2]; // April to June
+        return order[11]; // January to March
+      };
+
+      // Get the chapter based on the current day of the year
+      const getChapterForDay = () => {
+        const dayOfYear = getDayOfYear();
+        const book = getBook(currentMonth);
+
+        const chapters = num[book]; // Get total chapters for the book
+        const startOfBookInYear = {
+          John: 1, // January to March
+          Matthew: 91, // April to June
+          Mark: 182, // July to September
+          Luke: 273, // October to December
+        };
+
+        // Calculate the offset in the book for the current day
+        const dayInBookRange = dayOfYear - startOfBookInYear[book];
+        const chapter = (dayInBookRange % chapters) + 1; // Get the chapter number
+
+        return { book, chapter };
+      };
+
+      const result = getChapterForDay();
+
+      console.log(result);
+
+      const name = document.getElementById('name');
+
+      name.innerHTML = `${result.book} ${result.chapter}`;
+
+      const content = document.getElementById('root');
+
+      const data = fetch('./apostles_gospels.json')
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data[result.book][result.chapter - 1]);
+          content.innerHTML = cleanBibleText(
+            data[result.book][result.chapter - 1]
+          );
+        });
+
+      let speechSynthesis = window.speechSynthesis;
+      let speechUtterance = null;
+      let isReading = false;
+
+      const readButton = document.getElementById('readButton');
+
+      function toggleReading() {
+        if (isReading) {
+          stopReading();
+        } else {
+          startReading();
+        }
+      }
+
+      function startReading() {
+        if (!speechSynthesis) {
+          alert('Sorry update your browser to use this feature');
+          return;
+        }
+
+        speechUtterance = new SpeechSynthesisUtterance(content.textContent);
+
+        
+        speechUtterance.pitch = 1;
+
+        // Configurar la voz en español
+        speechUtterance.lang = 'en-EN';
+
+        // Obtener voces disponibles
+        let voices = speechSynthesis.getVoices();
+
+        // Buscar una voz en español
+        let spanishVoice = voices.find((voice) => voice.lang.includes('en'));
+        if (spanishVoice) {
+          speechUtterance.voice = spanishVoice;
+        }
+
+        // Ajustar velocidad y tono
+        speechUtterance.rate = 0.7; // velocidad (0.1 a 10)
+        speechUtterance.pitch = 1.5; // tono (0 a 2)
+
+        // Eventos
+        speechUtterance.onstart = () => {
+          isReading = true;
+          readButton.classList.add('reading');
+          readButton.innerHTML = '<i class="fas fa-stop"></i>';
+        };
+
+        speechUtterance.onend = () => {
+          isReading = false;
+          readButton.classList.remove('reading');
+          readButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+        };
+
+        speechUtterance.onerror = (event) => {
+          console.error('Error en la lectura:', event);
+          stopReading();
+        };
+
+        speechSynthesis.speak(speechUtterance);
+      }
+
+      function stopReading() {
+        if (speechSynthesis) {
+          speechSynthesis.cancel();
+          isReading = false;
+          readButton.classList.remove('reading');
+          readButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+      }
+
+      // Asegurarse de que las voces estén cargadas
+      speechSynthesis.onvoiceschanged = () => {
+        voices = speechSynthesis.getVoices();
+      };
+
+      // Evento click del botón
+      readButton.addEventListener('click', toggleReading);
+
+      // Limpiar al salir de la página
+      window.onbeforeunload = () => {
+        stopReading();
+      };
+
+      // Manejar cambios de visibilidad de la página
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && isReading) {
+          stopReading();
+        }
+      });
+
+    </script>
+  </body>
+</html>
