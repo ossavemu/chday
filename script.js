@@ -20,6 +20,9 @@ async function getGospelChapters(bookId, lastChapter) {
       const response = await fetch(`${apiUrl}${bookId}/${chapterNumber}.json`);
       const data = await response.json();
 
+      // wait for 1 second
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       if (data.chapter) {
         // Extract only the verse content (filter out headings, line breaks, etc.)
         const chapterContent = data.chapter.content
@@ -62,8 +65,8 @@ async function getApostlesGospels() {
   }
 
   // Write the result to a file
-  await writeFile('apostles_gospels.json', JSON.stringify(result, null, 2));
-  console.log('Gospels saved to apostles_gospels.json');
+  await writeFile('god_word.json', JSON.stringify(result, null, 2));
+  console.log('Gospels saved to god_word.json');
 }
 
 // Execute the function

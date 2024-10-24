@@ -1,4 +1,4 @@
-import { fetchData } from './data.js';
+import { getData } from './data.js';
 import { initializeSpeech, stopReading, toggleReading } from './speech.js';
 import { cleanBibleText, getChapterForDay } from './utils.js';
 
@@ -8,9 +8,10 @@ const readButton = document.getElementById('readButton');
 const stopButton = document.getElementById('stopButton');
 
 const result = getChapterForDay();
+
 name.innerHTML = `${result.book} ${result.chapter}`;
 
-const gospel = cleanBibleText(await fetchData(result.book, result.chapter));
+const gospel = cleanBibleText(await getData(result.book, result.chapter));
 
 const fragments = gospel
   .split('. ')
@@ -21,7 +22,7 @@ content.innerHTML = fragments.join(' ');
 initializeSpeech();
 
 readButton.addEventListener('click', () => {
-  toggleReading(fragments.map((f) => f.replace(/<\/?span[^>]*>/g, ''))); // Solo el texto
+  toggleReading(fragments.map((f) => f.replace(/<\/?span[^>]*>/g, '')));
 });
 
 stopButton.addEventListener('click', () => {
