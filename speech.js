@@ -11,23 +11,24 @@ export function initializeSpeech() {
   speechUtterance.rate = 0.7;
   speechUtterance.pitch = 1.5;
 
+  // Al terminar de leer un fragmento, pasa al siguiente
   speechUtterance.onend = () => {
     if (!isPaused) {
-      highlightFragment(currentFragmentIndex, false); // Elimina el resaltado
-      currentFragmentIndex++;
+      highlightFragment(currentFragmentIndex, false); // Desactiva el resaltado del fragmento actual
+      currentFragmentIndex++; // Pasa al siguiente fragmento
 
       if (currentFragmentIndex < fragments.length) {
         highlightFragment(currentFragmentIndex, true); // Resalta el siguiente fragmento
-        startReading(fragments[currentFragmentIndex]);
+        startReading(fragments[currentFragmentIndex]); // Inicia la lectura del siguiente fragmento
       } else {
         isReading = false;
         document.getElementById('readButton').innerHTML =
-          '<i class="fas fa-volume-up"></i>';
+          '<i class="fas fa-volume-up"></i>'; // Cambia el botón a "Play" cuando termina
       }
     }
   };
 
-  // Detectar cambios de visibilidad de la pestaña
+  // Manejo de cambio de visibilidad
   document.addEventListener('visibilitychange', handleVisibilityChange);
 }
 
@@ -107,14 +108,23 @@ function clearAllHighlights() {
   });
 }
 
+// Manejar el cambio de visibilidad de la página
 function handleVisibilityChange() {
   if (document.hidden) {
     if (isReading && !isPaused) {
       pauseReading();
     }
   } else {
-    if (isReading && isPaused) {
+    if (isReading && !isPaused) {
       resumeReading();
     }
   }
+}
+
+// Función para comenzar la lectura desde un fragmento específico
+export function readFromFragment(index, textFragments) {
+  fragments = textFragments; // Asegurarse de que los fragmentos estén asignados
+  currentFragmentIndex = index; // Actualizar el índice actual para iniciar desde el fragmento clicado
+  highlightFragment(currentFragmentIndex, true); // Resaltar el fragmento seleccionado
+  startReading(fragments[currentFragmentIndex]); // Iniciar la lectura desde el fragmento seleccionado
 }

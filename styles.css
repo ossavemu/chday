@@ -103,6 +103,9 @@ body {
   .highlighted {
     color: darkslategrey;
   }
+  .fragment:hover {
+    color: darkslategrey;
+  }
 }
 
 /* Contenedor flotante para los botones */
@@ -169,5 +172,24 @@ button:hover {
 
 .highlighted {
   animation: highlightEffect 1s ease-in-out;
+
   background-color: rgba(253, 253, 150, 0.8);
+}
+
+.fragment {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.fragment:hover {
+  background-color: rgba(253, 253, 150, 0.8);
+}
+
+.highlighted {
+  background-color: rgba(253, 253, 150, 0.8);
+  color: darkslategray;
+  transition: background-color 0.3s ease;
+  transition: color 0.3s ease-in-out;
 }
