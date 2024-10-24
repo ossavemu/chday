@@ -1,6 +1,6 @@
 export async function fetchData(book, chapter) {
   const currentURL = window.location.href;
-  const resource = 'apostles_gospels.json'; // Cambia si la ruta es distinta
+  const resource = 'apostles_gospels.json';
   const apiUrl = `${currentURL}${resource}`;
   console.log(apiUrl);
 
