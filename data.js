@@ -1,7 +1,8 @@
 export async function fetchData(book, chapter) {
-  const host = location.origin;
+  const currentURL = window.location.href;
   const resource = 'apostles_gospels.json'; // Cambia si la ruta es distinta
-  const apiUrl = `${host}/${resource}`;
+  const apiUrl = `${currentURL}${resource}`;
+  console.log(apiUrl);
 
   try {
     const response = await fetch(apiUrl);
